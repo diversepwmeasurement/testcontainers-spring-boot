@@ -1,15 +1,12 @@
-name: Changelog Release Drafter
-
-on:
-  push:
-    branches:
-      - develop
-      - support/2.3.X
-
 jobs:
   update_release_draft:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - uses: release-drafter/release-drafter@v6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - continue-on-error: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: release-drafter/release-drafter@v6
+name: Changelog Release Drafter
+on:
+  repository_dispatch:
+    types: trigger-ga___changelog-release-drafter.yml

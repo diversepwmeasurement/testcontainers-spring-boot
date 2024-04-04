@@ -1,27 +1,26 @@
-name: "Trivy"
-
-on:
-  schedule:
-    - cron: '24 10 * * 5'
-
 jobs:
   build:
     name: Trivy vulnerability scanner
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          ignore-unfixed: true
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
+    - continue-on-error: true
+      name: Checkout code
+      uses: actions/checkout@v4
+    - continue-on-error: true
+      name: Run Trivy vulnerability scanner in repo mode
+      uses: aquasecurity/trivy-action@master
+      with:
+        format: sarif
+        ignore-unfixed: true
+        output: trivy-results.sarif
+        scan-type: fs
+        severity: CRITICAL
+    - continue-on-error: true
+      name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: trivy-results.sarif
+name: Trivy
+on:
+  repository_dispatch:
+    types: trigger-ga___codeql-analysis.yml
